@@ -25,6 +25,7 @@ public class Main {
 		int initialNetworkSize = 0;
 		int links = 0;
 		int nodeId = 0;
+		int ratio = 0;
 		String response;
 		List<Node> nodeList = null;
 		
@@ -39,8 +40,11 @@ public class Main {
 			System.out.println("Enter number of links to be formed: ");
 			links = in.nextInt();
 			
+			System.out.println("Enter the social ratio: ");
+			ratio = in.nextInt();
+			
 			NetworkGenerator netGen = new NetworkGenerator();
-			nodeList = netGen.createNodes(networkSize, initialNetworkSize, links);
+			nodeList = netGen.createNodes(networkSize, initialNetworkSize, links, ratio);
 			
 			System.out.println("Network of size "+networkSize+" is generated. \n");
 			

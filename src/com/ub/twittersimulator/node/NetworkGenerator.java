@@ -23,12 +23,12 @@ import com.ub.twittersimulator.utilities.CompareMapValues;
  */
 public class NetworkGenerator {
 
-	public List<Node> createNodes(Integer networkSize, Integer initialNetworkSize, int links){
+	public List<Node> createNodes(Integer networkSize, Integer initialNetworkSize, int links, int ratio){
 		
 		List <Node> nodeList = createInitialNetwork(initialNetworkSize);
 
-		int infoLinks = (2*links)/3; 
-		int socialLinks = (links)/3;
+		int infoLinks = (2*links)/ratio; 
+		int socialLinks = (links)/ratio;
 		Random random = new Random();
 		
 		for(int i=initialNetworkSize; i<networkSize; i++){

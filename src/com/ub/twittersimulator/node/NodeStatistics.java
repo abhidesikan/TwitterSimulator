@@ -9,8 +9,16 @@ import java.util.List;
  * @author abhi
  *
  */
+
+/*
+ * Class contains method to print node information.
+ */
 public class NodeStatistics {
 
+	/*
+	 * Method accepts the node list and node id as input parameter and displays the node information
+	 * for that particular node id.
+	 */
 	public void printNodeInformation(List<Node> nodeList, int nodeId){
 		
 		Node n = nodeList.get(nodeId);

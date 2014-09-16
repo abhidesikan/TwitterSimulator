@@ -12,8 +12,16 @@ import java.util.TreeSet;
  * @author abhi
  *
  */
+
+/*
+ * Class contains method to compare map values.
+ */
 public class CompareMapValues {
 
+	/*
+	 * Method accepts a TreeMap as input and returns a SortedSet which is sorted based on values in the 
+	 * TreeMap.
+	 */
 	public static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
         SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
             new Comparator<Map.Entry<K,V>>() {

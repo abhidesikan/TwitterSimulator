@@ -14,8 +14,15 @@ import com.ub.twittersimulator.node.NodeStatistics;
  * @author abhi
  *
  */
+
+/*
+ * Main class. Entry point of the program.
+ */
 public class Main {
 
+	/*
+	 * Main method. Accepts input arguments and calls methods in NetworkGenerator and NodeStatistics class.
+	 */
 	public static void main(String args[]){
 		
 		

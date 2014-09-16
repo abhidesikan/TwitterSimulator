@@ -21,8 +21,18 @@ import com.ub.twittersimulator.utilities.CompareMapValues;
  * @author abhi
  *
  */
+
+/*
+ * Class contains methods to create Twitter network based on input parameters.
+ */
 public class NetworkGenerator {
 
+	/*
+	 * Method accepts network size, initial network size, number of links to be formed by each node and 
+	 * social ratio as input parameters. It calls createInitialNetwork method to create initial network
+	 * and then adds each incoming node to the network, forming links based on preferential attachment
+	 * model. Returns list of nodes populated with their respective node information.
+	 */
 	public List<Node> createNodes(Integer networkSize, Integer initialNetworkSize, int links, int ratio){
 		
 		List <Node> nodeList = createInitialNetwork(initialNetworkSize);
@@ -88,6 +98,11 @@ public class NetworkGenerator {
 		
 	}
 	
+	/*
+	 * Method accepts initial network size as input parameter. Creates a fully connected social network
+	 * for the given input network size. Returns the list of nodes populated with respective node
+	 * information.
+	 */
 	public List<Node> createInitialNetwork(Integer initialNetworkSize){
 		
 		List<Node> nodeList = new ArrayList<>();

@@ -10,6 +10,10 @@ import java.util.List;
  * @author abhi
  *
  */
+
+/*
+ * Class contains fields and methods detailing node information.
+ */
 public class Node {
 
 	private Integer nodeId;

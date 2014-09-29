@@ -16,6 +16,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 
 import com.ub.twittersimulator.utilities.CompareMapValues;
+import com.ub.twittersimulator.utilities.Probability;
 
 /**
  * @author abhi
@@ -28,102 +29,113 @@ import com.ub.twittersimulator.utilities.CompareMapValues;
 public class NetworkGenerator {
 
 	/*
-	 * Method accepts network size, initial network size, number of links to be formed by each node and 
-	 * social ratio as input parameters. It calls createInitialNetwork method to create initial network
-	 * and then adds each incoming node to the network, forming links based on preferential attachment
-	 * model. Returns list of nodes populated with their respective node information.
+	 * Method accepts network size, initial network size, number of links to be
+	 * formed by each node and social ratio as input parameters. It calls
+	 * createInitialNetwork method to create initial network and then adds each
+	 * incoming node to the network, forming links based on preferential
+	 * attachment model. Returns list of nodes populated with their respective
+	 * node information.
 	 */
-	public List<Node> createNodes(Integer networkSize, Integer initialNetworkSize, int links, int ratio){
-		
-		List <Node> nodeList = createInitialNetwork(initialNetworkSize);
+	public List<Node> createNodes(Integer networkSize,
+			Integer initialNetworkSize, int links, int ratio) {
 
-		int infoLinks = (2*links)/ratio; 
-		int socialLinks = (links)/ratio;
+		List<Node> nodeList = createInitialNetwork(initialNetworkSize);
+
+		int infoLinks = (2 * links) / ratio;
+		int socialLinks = (links) / ratio;
 		Random random = new Random();
-		
-		for(int i=initialNetworkSize; i<networkSize; i++){
-			
+		Probability prob = new Probability();
+
+		for (int i = initialNetworkSize; i < networkSize; i++) {
+
+			nodeList = prob.updateProbability(nodeList);
+
 			TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
 			SortedSet<Entry<Integer, Integer>> sortedMap = null;
-			int [] nodeIdList = new int[links];
 			Node node = new Node();
-			int nodeId = 0, k=0;
-			
-			for(int j=0; j<links; j++){
-				 nodeId = nodeList.get(random.nextInt(nodeList.size())).getNodeId();
-				 if(map.containsKey(nodeId)){
-					 j--;
-					 continue;
-				 }
-				 map.put(nodeId, nodeList.get(nodeId).getInfoCount()+nodeList.get(nodeId).getSocialCount());
-			}
-			
-			sortedMap = CompareMapValues.entriesSortedByValues(map);
-			
-			Iterator it = sortedMap.iterator();
-			while(it.hasNext()){
-				Map.Entry<Integer,Integer> pairs = (Map.Entry<Integer, Integer>)it.next();
-				nodeIdList[k] = pairs.getKey();
-				k++;
-			}
-			
-			node.setNodeId(i);
-			node.setUserName("User "+i);
-			node.setHandle("@user"+i);
-			nodeList.add(node);
-			
-			for(int m = 0; m<socialLinks; m++){
-				node = nodeList.get(nodeIdList[m]);
-				nodeList.get(i).getFollowing().add(node.getNodeId());
-				nodeList.get(i).getFollowers().add(node.getNodeId());
-				nodeList.get(i).setSocialCount(nodeList.get(i).getSocialCount()+1);
+			Node newNode = new Node();
+			int nodeId = 0, j = 0, k = 0;
 
-				node.getFollowers().add(i);
-				node.getFollowing().add(i);
-				node.setSocialCount(node.getSocialCount()+1);
-			}
-			
-			for(int l=socialLinks; l<links; l++){
-				node = nodeList.get(nodeIdList[l]);
-				nodeList.get(i).getFollowing().add(node.getNodeId());
-				nodeList.get(i).setInfoCount(nodeList.get(i).getInfoCount()+1);
+			Random rand = new Random();
+			newNode.setNodeId(i);
+			newNode.setUserName("User " + i);
+			newNode.setHandle("@user" + i);
+			nodeList.add(newNode);
+			for (j = 0; j < infoLinks; j++) {
+				node = nodeList.get(random.nextInt(nodeList.size() - 1));
+				Double pickedNumber = rand.nextDouble();
 
+				if(node.getInfoProb() <= pickedNumber){
+					j--;
+					continue;
+				}
 				
-				node.getFollowers().add(i);
-				node.setInfoCount(node.getInfoCount()+1);
-			}			
+				if(nodeList.get(i).getFollowing().contains(node.getNodeId())){
+					j--;
+					continue;
+				}
+				if (node.getInfoProb() >= pickedNumber) {
+					nodeList.get(i).getFollowing().add(node.getNodeId());
+					node.getFollowers().add(i);
+					node.setInfoCount(node.getInfoCount() + 1);
+				}
+			}
+
+			for (k = 0; k < socialLinks; k++) {
+
+				node = nodeList.get(random.nextInt(nodeList.size() - 1));
+				Double pickedNumber = rand.nextDouble();
+				
+				if(node.getSocProb() <= pickedNumber){
+					k--;
+					continue;
+				}
+
+				if(nodeList.get(i).getFollowing().contains(node.getNodeId())){
+					k--;
+					continue;
+				}
+				if (node.getSocProb() >= pickedNumber) {
+					node.getFollowers().add(i);
+					node.getFollowing().add(i);
+					node.setSocialCount(node.getSocialCount() + 1);
+					nodeList.get(i).getFollowing().add(node.getNodeId());
+					nodeList.get(i).getFollowers().add(node.getNodeId());
+					nodeList.get(i).setSocialCount(nodeList.get(i).getSocialCount()+1);
+				}
+			}
 		}
 
 		return nodeList;
-		
+
 	}
-	
+
 	/*
-	 * Method accepts initial network size as input parameter. Creates a fully connected social network
-	 * for the given input network size. Returns the list of nodes populated with respective node
-	 * information.
+	 * Method accepts initial network size as input parameter. Creates a fully
+	 * connected social network for the given input network size. Returns the
+	 * list of nodes populated with respective node information.
 	 */
-	public List<Node> createInitialNetwork(Integer initialNetworkSize){
-		
+	public List<Node> createInitialNetwork(Integer initialNetworkSize) {
+
 		List<Node> nodeList = new ArrayList<>();
-		
-		for(int i=0; i<initialNetworkSize; i++){
+
+		for (int i = 0; i < initialNetworkSize; i++) {
 			Node node = new Node();
 			node.setNodeId(i);
-			node.setUserName("User "+i);
-			node.setHandle("@user"+i);
+			node.setUserName("User " + i);
+			node.setHandle("@user" + i);
 			nodeList.add(node);
 		}
-		
-		for(Node node: nodeList){
-			for(int i=0; i<initialNetworkSize; i++){
-				if(i!=node.getNodeId()){
+
+		for (Node node : nodeList) {
+			for (int i = 0; i < initialNetworkSize; i++) {
+				if (i != node.getNodeId()) {
 					node.getFollowers().add(i);
 					node.getFollowing().add(i);
-					node.setSocialCount(node.getSocialCount()+1);
+					node.setSocialCount(node.getSocialCount() + 1);
 				}
 			}
-		}		
+		}
 
 		return nodeList;
 	}

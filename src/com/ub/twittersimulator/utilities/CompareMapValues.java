@@ -6,7 +6,9 @@ package com.ub.twittersimulator.utilities;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 /**
  * @author abhi
@@ -19,19 +21,14 @@ import java.util.TreeSet;
 public class CompareMapValues {
 
 	/*
-	 * Method accepts a TreeMap as input and returns a SortedSet which is sorted based on values in the 
-	 * TreeMap.
+	 * Method accepts a TreeMap and key as input and returns the node id which falls under the range in the key.
+	 * 
 	 */
-	public static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
-        SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
-            new Comparator<Map.Entry<K,V>>() {
-                @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
-                    int res = e1.getValue().compareTo(e2.getValue());
-                    return res != 0 ? res : 1; // Special fix to preserve items with equal values
-                }
-            }
-        );
-        sortedEntries.addAll(map.entrySet());
-        return sortedEntries;
-    }
+	public static <K, V> V mappedValue(TreeMap<K, V> map, K key) {
+	    Entry<K, V> e = map.floorEntry(key);
+	    if (e != null && e.getValue() == null) {
+	        e = map.lowerEntry(key);
+	    }
+	    return e == null ? null : e.getValue();
+	}
 }

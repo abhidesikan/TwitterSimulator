@@ -40,70 +40,65 @@ public class NetworkGenerator {
 			Integer initialNetworkSize, int links, int ratio) {
 
 		List<Node> nodeList = createInitialNetwork(initialNetworkSize);
-
+		TreeMap<Double, Integer> infoTreeMap = null;
+		TreeMap<Double, Integer> socTreeMap = null;
+		
 		int infoLinks = (2 * links) / ratio;
 		int socialLinks = (links) / ratio;
-		Random random = new Random();
 		Probability prob = new Probability();
 
 		for (int i = initialNetworkSize; i < networkSize; i++) {
+			
+			List<Integer> selected = new ArrayList<Integer>();
 
 			nodeList = prob.updateProbability(nodeList);
+			infoTreeMap = prob.updateInfoTreeMap(nodeList);
+			socTreeMap = prob.updateSocTreeMap(nodeList);
 
-			TreeMap<Integer, Integer> map = new TreeMap<Integer, Integer>();
-			SortedSet<Entry<Integer, Integer>> sortedMap = null;
 			Node node = new Node();
 			Node newNode = new Node();
-			int nodeId = 0, j = 0, k = 0;
+			int j = 0, k = 0;
 
 			Random rand = new Random();
 			newNode.setNodeId(i);
 			newNode.setUserName("User " + i);
 			newNode.setHandle("@user" + i);
-			nodeList.add(newNode);
-			for (j = 0; j < infoLinks; j++) {
-				node = nodeList.get(random.nextInt(nodeList.size() - 1));
-				Double pickedNumber = rand.nextDouble();
 
-				if(node.getInfoProb() <= pickedNumber){
+			for (j = 0; j < infoLinks; j++) {
+				Double pickedNumber = rand.nextDouble();
+				node = nodeList.get(CompareMapValues.mappedValue(infoTreeMap,
+						pickedNumber));
+				if(selected.contains(node.getNodeId())){
 					j--;
 					continue;
 				}
+				selected.add(node.getNodeId());
 				
-				if(nodeList.get(i).getFollowing().contains(node.getNodeId())){
-					j--;
-					continue;
-				}
-				if (node.getInfoProb() >= pickedNumber) {
-					nodeList.get(i).getFollowing().add(node.getNodeId());
-					node.getFollowers().add(i);
-					node.setInfoCount(node.getInfoCount() + 1);
-				}
+				newNode.getFollowing().add(node.getNodeId());
+				node.getFollowers().add(i);
+				node.setInfoCount(node.getInfoCount() + 1);
+
 			}
 
 			for (k = 0; k < socialLinks; k++) {
-
-				node = nodeList.get(random.nextInt(nodeList.size() - 1));
 				Double pickedNumber = rand.nextDouble();
-				
-				if(node.getSocProb() <= pickedNumber){
-					k--;
-					continue;
-				}
+				node = nodeList.get(CompareMapValues.mappedValue(socTreeMap,pickedNumber));
 
-				if(nodeList.get(i).getFollowing().contains(node.getNodeId())){
+				if(selected.contains(node.getNodeId())){
 					k--;
 					continue;
 				}
-				if (node.getSocProb() >= pickedNumber) {
-					node.getFollowers().add(i);
-					node.getFollowing().add(i);
-					node.setSocialCount(node.getSocialCount() + 1);
-					nodeList.get(i).getFollowing().add(node.getNodeId());
-					nodeList.get(i).getFollowers().add(node.getNodeId());
-					nodeList.get(i).setSocialCount(nodeList.get(i).getSocialCount()+1);
-				}
+				selected.add(node.getNodeId());
+				
+				node.getFollowers().add(i);
+				node.getFollowing().add(i);
+				node.setSocialCount(node.getSocialCount() + 1);
+				newNode.getFollowing().add(node.getNodeId());
+				newNode.getFollowers().add(node.getNodeId());
+				newNode.setSocialCount(newNode.getSocialCount() + 1);
+
 			}
+			nodeList.add(newNode);
 		}
 
 		return nodeList;

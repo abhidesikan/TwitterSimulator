@@ -3,9 +3,12 @@
  */
 package com.ub.twittersimulator.node;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -103,28 +106,7 @@ public class NetworkGenerator {
 			}
 			nodeList.add(newNode);
 		}
-		
-		try{
-		
-			File file = new File("/home/abhi/workspaceLuna/TwitterSimulator/NodeDetails");
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("Node id"+"  "+"Followers"+"\n");
-			for(Node node:nodeList){
-				bw.write(node.getNodeId()+"  "+node.getFollowers().size()+"\n");
-			}
-			
-			bw.close();
-			
-		}catch(Exception e){
-			
-		}
-		
-		
+	
 		return nodeList;
 
 	}

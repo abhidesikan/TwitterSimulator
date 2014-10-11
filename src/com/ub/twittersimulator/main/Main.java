@@ -9,6 +9,7 @@ import java.util.Scanner;
 import com.ub.twittersimulator.node.NetworkGenerator;
 import com.ub.twittersimulator.node.Node;
 import com.ub.twittersimulator.node.NodeStatistics;
+import com.ub.twittersimulator.utilities.Python;
 
 /**
  * @author abhi
@@ -33,6 +34,7 @@ public class Main {
 		int links = 0;
 		int nodeId = 0;
 		int ratio = 0;
+		int gamma = 0;
 		String response;
 		List<Node> nodeList = null;
 		
@@ -52,6 +54,9 @@ public class Main {
 			
 			NetworkGenerator netGen = new NetworkGenerator();
 			nodeList = netGen.createNodes(networkSize, initialNetworkSize, links, ratio);
+			
+			Python python = new Python();
+			python.getGammaValue(nodeList);
 			
 			System.out.println("Network of size "+networkSize+" is generated. \n");
 			

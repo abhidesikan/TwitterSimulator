@@ -4,7 +4,9 @@
 package com.ub.twittersimulator.utilities;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class Python {
 		int gamma = 0;
 
 		try {
-			Process p = Runtime.getRuntime().exec("python twitter.py " + items);
+			Process p = Runtime.getRuntime().exec("python "+System.getProperty("user.dir")+"/Scripts/twitter.py "+ items);
 			BufferedReader bri = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));
 			while ((line = bri.readLine()) != null) {

@@ -33,9 +33,10 @@ public class Main {
 		int initialNetworkSize = 0;
 		int links = 0;
 		int nodeId = 0;
-		int ratio = 0;
+		double ratio = 0;
 		int gamma = 0;
-		String response;
+		boolean flag = false;
+		String response = null;
 		List<Node> nodeList = null;
 		
 		try{
@@ -50,10 +51,17 @@ public class Main {
 			links = in.nextInt();
 			
 			System.out.println("Enter the social ratio: ");
-			ratio = in.nextInt();
+			ratio = in.nextDouble();
+			
+			System.out.println("Do you want a static/dynamic network? (S/D)");
+			response = in.next();
+			if(response.equalsIgnoreCase("d")){
+				flag = true;
+			}
 			
 			NetworkGenerator netGen = new NetworkGenerator();
-			nodeList = netGen.createNodes(networkSize, initialNetworkSize, links, ratio);
+			nodeList = netGen.createNodes(networkSize, initialNetworkSize, links, ratio, flag);
+			
 			
 			Python python = new Python();
 			python.getGammaValue(nodeList);

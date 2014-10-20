@@ -43,23 +43,28 @@ public class NetworkGenerator {
 	 * node information.
 	 */
 	public List<Node> createNodes(Integer networkSize,
-			Integer initialNetworkSize, int links, int ratio) {
+			Integer initialNetworkSize, int links, double ratio, boolean flag) {
 
 		List<Node> nodeList = createInitialNetwork(initialNetworkSize);
 		TreeMap<Double, Integer> infoTreeMap = null;
 		TreeMap<Double, Integer> socTreeMap = null;
+		TreeMap<Double, Integer> infoOutTreeMap = null;
 		
-		int infoLinks = (2 * links) / ratio;
-		int socialLinks = (links) / ratio;
+		int infoLinks = (int)(links*(1-ratio));
+		int socialLinks = (int)(links*ratio);
 		Probability prob = new Probability();
 
 		for (int i = initialNetworkSize; i < networkSize; i++) {
-			
+
 			List<Integer> selected = new ArrayList<Integer>();
 
 			nodeList = prob.updateProbability(nodeList);
-			infoTreeMap = prob.updateInfoTreeMap(nodeList);
+			infoTreeMap = prob.updateInfoTreeMap((nodeList));
 			socTreeMap = prob.updateSocTreeMap(nodeList);
+			if(flag){
+				nodeList = prob.updateOutProbability(nodeList);
+				infoOutTreeMap = prob.updateInfoOutTreeMap(nodeList);
+			}
 
 			Node node = new Node();
 			Node newNode = new Node();
@@ -74,13 +79,14 @@ public class NetworkGenerator {
 				Double pickedNumber = rand.nextDouble();
 				node = nodeList.get(CompareMapValues.mappedValue(infoTreeMap,
 						pickedNumber));
-				if(selected.contains(node.getNodeId())){
+				if (selected.contains(node.getNodeId())) {
 					j--;
 					continue;
 				}
 				selected.add(node.getNodeId());
-				
+
 				newNode.getFollowing().add(node.getNodeId());
+	//			newNode.setInfoOutCount(newNode.getInfoOutCount()+1);
 				node.getFollowers().add(i);
 				node.setInfoCount(node.getInfoCount() + 1);
 
@@ -88,14 +94,15 @@ public class NetworkGenerator {
 
 			for (k = 0; k < socialLinks; k++) {
 				Double pickedNumber = rand.nextDouble();
-				node = nodeList.get(CompareMapValues.mappedValue(socTreeMap,pickedNumber));
+				node = nodeList.get(CompareMapValues.mappedValue(socTreeMap,
+						pickedNumber));
 
-				if(selected.contains(node.getNodeId())){
+				if (selected.contains(node.getNodeId())) {
 					k--;
 					continue;
 				}
 				selected.add(node.getNodeId());
-				
+
 				node.getFollowers().add(i);
 				node.getFollowing().add(i);
 				node.setSocialCount(node.getSocialCount() + 1);
@@ -105,8 +112,37 @@ public class NetworkGenerator {
 
 			}
 			nodeList.add(newNode);
+			
+			if(flag){
+				Double pickedNumber = rand.nextDouble();
+				node = nodeList.get(CompareMapValues.mappedValue(infoOutTreeMap, pickedNumber));				
+				Node n = nodeList.get(rand.nextInt(nodeList.size()));
+				if(node.getFollowing().contains(n.getNodeId())){
+					break;
+				}
+			}
 		}
-	
+		
+		try {
+			File file = new File(
+					"/home/abhi/workspaceLuna/TwitterSimulator/NodeDetails2");
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write("Node id" + "  " + "Followers" + "\n");
+			for (Node node : nodeList) {
+				bw.write(node.getNodeId() + "  " + node.getFollowers().size()+ "\n");
+			}
+
+			bw.close();
+			fw.close();
+		} catch (Exception e) {
+
+		}
+
 		return nodeList;
 
 	}
@@ -137,6 +173,8 @@ public class NetworkGenerator {
 				}
 			}
 		}
+
+		
 
 		return nodeList;
 	}

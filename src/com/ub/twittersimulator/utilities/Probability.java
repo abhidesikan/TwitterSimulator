@@ -22,6 +22,8 @@ public class Probability {
 	private static double totalSocialSum = 0;
 	private static double infoRange = 0.0;
 	private static double socRange = 0.0;
+	private static double totalOutInfoSum = 0;
+	private static double totalOutSocialSum = 0;
 	
 	/*
 	 * Method to update the social and information probability of every node in the network. 
@@ -40,7 +42,29 @@ public class Probability {
 					/ totalInfoSum);
 			node.setSocProb(node.getSocialCount() / totalSocialSum);
 		}
+		totalInfoSum = 0;
+		totalSocialSum = 0;
+		return nodeList;
+	}
+	
+	/*
+	 * Method to update social and information probability of every node in the network for nodes already
+	 * in the network. Accepts and returns updated node list. 
+	 * 
+	 */
+	public List<Node> updateOutProbability(List<Node> nodeList) {
 
+		for (int i = 0; i < nodeList.size(); i++) {
+			totalInfoSum = totalInfoSum + nodeList.get(i).getInfoOutCount()
+					+ nodeList.get(i).getSocialCount();
+		}
+		for (Node node : nodeList) {
+			node.setInfoOutProb((node.getInfoOutCount() + node.getSocialCount())
+					/ totalInfoSum);
+		}
+		totalInfoSum = 0;
+		totalSocialSum = 0;
+		
 		return nodeList;
 	}
 
@@ -76,4 +100,24 @@ public class Probability {
 		
 		return socTreeMap;
 	}
+	
+	
+	/*
+	 * Method accepts the node list as input and returns a TreeMap with information probability range as key 
+	 * and node id as value, for dynamic following of nodes.
+	 */
+	public TreeMap<Double, Integer> updateInfoOutTreeMap(List<Node> nodeList) {
+
+		TreeMap<Double, Integer> infoOutTreeMap = new TreeMap<Double, Integer>();
+
+		for (Node n : nodeList) {
+			infoOutTreeMap.put(infoRange, n.getNodeId());
+			infoRange = infoRange + n.getInfoOutProb();
+		}
+		infoRange = 0.0;
+		return infoOutTreeMap;
+	}
+
+
+	
 }

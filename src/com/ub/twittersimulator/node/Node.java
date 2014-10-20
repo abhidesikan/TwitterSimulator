@@ -21,8 +21,10 @@ public class Node {
 	private String handle;
 	private Integer socialCount;
 	private Integer infoCount;
+	private Integer infoOutCount;
 	private Double infoProb;
 	private Double socProb;
+	private Double infoOutProb;
 	private List<String> tweets;
 	private List<String> newsFeed;
 	private List<Integer> following;
@@ -36,6 +38,45 @@ public class Node {
 		tweets = new ArrayList<String>();
 		newsFeed = new ArrayList<String>();
 	}
+	
+	
+
+	/**
+	 * @return the infoOutCount
+	 */
+	public Integer getInfoOutCount() {
+		return infoOutCount;
+	}
+
+
+
+	/**
+	 * @param infoOutCount the infoOutCount to set
+	 */
+	public void setInfoOutCount(Integer infoOutCount) {
+		this.infoOutCount = infoOutCount;
+	}
+
+
+
+	/**
+	 * @return the infoOutProb
+	 */
+	public Double getInfoOutProb() {
+		return infoOutProb;
+	}
+
+
+
+	/**
+	 * @param infoOutProb the infoOutProb to set
+	 */
+	public void setInfoOutProb(Double infoOutProb) {
+		this.infoOutProb = infoOutProb;
+	}
+
+
+
 
 	/**
 	 * @return the infoProb

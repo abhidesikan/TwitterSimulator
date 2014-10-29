@@ -33,6 +33,7 @@ public class Node {
 	public Node() {
 		socialCount = 0;
 		infoCount = 0;
+		infoOutCount = 0;
 		following = new ArrayList<Integer>();
 		followers = new ArrayList<Integer>();
 		tweets = new ArrayList<String>();

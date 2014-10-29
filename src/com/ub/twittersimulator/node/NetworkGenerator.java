@@ -61,10 +61,7 @@ public class NetworkGenerator {
 			nodeList = prob.updateProbability(nodeList);
 			infoTreeMap = prob.updateInfoTreeMap((nodeList));
 			socTreeMap = prob.updateSocTreeMap(nodeList);
-			if(flag){
-				nodeList = prob.updateOutProbability(nodeList);
-				infoOutTreeMap = prob.updateInfoOutTreeMap(nodeList);
-			}
+
 
 			Node node = new Node();
 			Node newNode = new Node();
@@ -86,7 +83,7 @@ public class NetworkGenerator {
 				selected.add(node.getNodeId());
 
 				newNode.getFollowing().add(node.getNodeId());
-	//			newNode.setInfoOutCount(newNode.getInfoOutCount()+1);
+				newNode.setInfoOutCount(newNode.getInfoOutCount()+1);
 				node.getFollowers().add(i);
 				node.setInfoCount(node.getInfoCount() + 1);
 
@@ -114,11 +111,48 @@ public class NetworkGenerator {
 			nodeList.add(newNode);
 			
 			if(flag){
+				nodeList = prob.updateOutProbability(nodeList);
+				infoOutTreeMap = prob.updateInfoOutTreeMap(nodeList);
+
+				Node node1 = new Node();
+				Node newNode1 = new Node();
 				Double pickedNumber = rand.nextDouble();
-				node = nodeList.get(CompareMapValues.mappedValue(infoOutTreeMap, pickedNumber));				
-				Node n = nodeList.get(rand.nextInt(nodeList.size()));
-				if(node.getFollowing().contains(n.getNodeId())){
-					break;
+				newNode1 = nodeList.get(CompareMapValues.mappedValue(infoOutTreeMap, pickedNumber));				
+				
+				
+				for (j = 0; j < infoLinks; j++) {
+					Double pNumber = rand.nextDouble();
+					node1 = nodeList.get(CompareMapValues.mappedValue(infoTreeMap,
+							pNumber));
+					if (selected.contains(node1.getNodeId())) {
+						continue;
+					}
+					selected.add(node1.getNodeId());
+
+					newNode1.getFollowing().add(node1.getNodeId());
+					newNode1.setInfoOutCount(newNode1.getInfoOutCount()+1);
+					node1.getFollowers().add(i);
+					node1.setInfoCount(node1.getInfoCount() + 1);
+
+				}
+
+				for (k = 0; k < socialLinks; k++) {
+					Double pNumber = rand.nextDouble();
+					node1 = nodeList.get(CompareMapValues.mappedValue(socTreeMap,
+							pNumber));
+
+					if (selected.contains(node1.getNodeId())) {
+						continue;
+					}
+					selected.add(node1.getNodeId());
+
+					node1.getFollowers().add(i);
+					node1.getFollowing().add(i);
+					node1.setSocialCount(node1.getSocialCount() + 1);
+					newNode1.getFollowing().add(node1.getNodeId());
+					newNode1.getFollowers().add(node1.getNodeId());
+					newNode1.setSocialCount(newNode1.getSocialCount() + 1);
+
 				}
 			}
 		}

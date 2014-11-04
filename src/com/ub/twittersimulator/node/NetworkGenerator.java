@@ -124,14 +124,13 @@ public class NetworkGenerator {
 					Double pNumber = rand.nextDouble();
 					node1 = nodeList.get(CompareMapValues.mappedValue(infoTreeMap,
 							pNumber));
-					if (selected.contains(node1.getNodeId())) {
+					if (newNode1.getFollowing().contains(node1.getNodeId())) {
 						continue;
 					}
-					selected.add(node1.getNodeId());
 
 					newNode1.getFollowing().add(node1.getNodeId());
 					newNode1.setInfoOutCount(newNode1.getInfoOutCount()+1);
-					node1.getFollowers().add(i);
+					node1.getFollowers().add(newNode1.getNodeId());
 					node1.setInfoCount(node1.getInfoCount() + 1);
 
 				}
@@ -141,13 +140,12 @@ public class NetworkGenerator {
 					node1 = nodeList.get(CompareMapValues.mappedValue(socTreeMap,
 							pNumber));
 
-					if (selected.contains(node1.getNodeId())) {
+					if (newNode1.getFollowing().contains(node1.getNodeId())) {
 						continue;
 					}
-					selected.add(node1.getNodeId());
 
-					node1.getFollowers().add(i);
-					node1.getFollowing().add(i);
+					node1.getFollowers().add(newNode1.getNodeId());
+					node1.getFollowing().add(newNode1.getNodeId());
 					node1.setSocialCount(node1.getSocialCount() + 1);
 					newNode1.getFollowing().add(node1.getNodeId());
 					newNode1.getFollowers().add(node1.getNodeId());

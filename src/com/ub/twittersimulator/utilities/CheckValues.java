@@ -4,11 +4,15 @@
 package com.ub.twittersimulator.utilities;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
+
+import com.ub.twittersimulator.node.Node;
 
 /**
  * @author abhi
@@ -18,7 +22,7 @@ import java.util.Map.Entry;
 /*
  * Class contains method to compare map values.
  */
-public class CompareMapValues {
+public class CheckValues {
 
 	/*
 	 * Method accepts a TreeMap and key as input and returns the node id which falls under the range in the key.
@@ -30,5 +34,20 @@ public class CompareMapValues {
 	        e = map.lowerEntry(key);
 	    }
 	    return e == null ? null : e.getValue();
+	}
+	
+	public static void checkClosure(Node node1, int nodeId, List nodeList){
+		
+		List followers = node1.getFollowing();
+		Iterator it = followers.iterator();
+		
+		while(it.hasNext()){
+			Node node = (Node) nodeList.get((Integer)it.next());
+			if(node.getFollowing().contains(nodeId)){
+				node1.setClosureCount(node1.getClosureCount()+1);
+				break;
+			}
+		}
+		
 	}
 }

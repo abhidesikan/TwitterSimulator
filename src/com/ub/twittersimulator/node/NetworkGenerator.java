@@ -21,7 +21,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 
-import com.ub.twittersimulator.utilities.CompareMapValues;
+import com.ub.twittersimulator.utilities.CheckValues;
 import com.ub.twittersimulator.utilities.Probability;
 
 /**
@@ -74,7 +74,7 @@ public class NetworkGenerator {
 
 			for (j = 0; j < infoLinks; j++) {
 				Double pickedNumber = rand.nextDouble();
-				node = nodeList.get(CompareMapValues.mappedValue(infoTreeMap,
+				node = nodeList.get(CheckValues.mappedValue(infoTreeMap,
 						pickedNumber));
 				if (selected.contains(node.getNodeId())) {
 					j--;
@@ -91,7 +91,7 @@ public class NetworkGenerator {
 
 			for (k = 0; k < socialLinks; k++) {
 				Double pickedNumber = rand.nextDouble();
-				node = nodeList.get(CompareMapValues.mappedValue(socTreeMap,
+				node = nodeList.get(CheckValues.mappedValue(socTreeMap,
 						pickedNumber));
 
 				if (selected.contains(node.getNodeId())) {
@@ -117,17 +117,18 @@ public class NetworkGenerator {
 				Node node1 = new Node();
 				Node newNode1 = new Node();
 				Double pickedNumber = rand.nextDouble();
-				newNode1 = nodeList.get(CompareMapValues.mappedValue(infoOutTreeMap, pickedNumber));				
+				newNode1 = nodeList.get(CheckValues.mappedValue(infoOutTreeMap, pickedNumber));				
 				
 				
 				for (j = 0; j < infoLinks; j++) {
 					Double pNumber = rand.nextDouble();
-					node1 = nodeList.get(CompareMapValues.mappedValue(infoTreeMap,
+					node1 = nodeList.get(CheckValues.mappedValue(infoTreeMap,
 							pNumber));
 					if (newNode1.getFollowing().contains(node1.getNodeId())) {
 						continue;
 					}
-
+					CheckValues.checkClosure(newNode1, node1.getNodeId(), nodeList);
+					
 					newNode1.getFollowing().add(node1.getNodeId());
 					newNode1.setInfoOutCount(newNode1.getInfoOutCount()+1);
 					node1.getFollowers().add(newNode1.getNodeId());
@@ -137,12 +138,14 @@ public class NetworkGenerator {
 
 				for (k = 0; k < socialLinks; k++) {
 					Double pNumber = rand.nextDouble();
-					node1 = nodeList.get(CompareMapValues.mappedValue(socTreeMap,
+					node1 = nodeList.get(CheckValues.mappedValue(socTreeMap,
 							pNumber));
 
 					if (newNode1.getFollowing().contains(node1.getNodeId())) {
 						continue;
 					}
+
+					CheckValues.checkClosure(newNode1, node1.getNodeId(), nodeList);
 
 					node1.getFollowers().add(newNode1.getNodeId());
 					node1.getFollowing().add(newNode1.getNodeId());

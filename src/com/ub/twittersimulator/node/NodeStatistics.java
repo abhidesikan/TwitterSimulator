@@ -30,5 +30,6 @@ public class NodeStatistics {
 		System.out.println("Informational links :"+n.getInfoCount());
 		System.out.println("Info Probability :"+n.getInfoProb());
 		System.out.println("Social Probability :"+n.getSocProb());
+		System.out.println("Closure count "+n.getClosureCount());
 	}
 }

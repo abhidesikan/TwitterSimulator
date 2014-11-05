@@ -22,6 +22,7 @@ public class Node {
 	private Integer socialCount;
 	private Integer infoCount;
 	private Integer infoOutCount;
+	private Integer closureCount;
 	private Double infoProb;
 	private Double socProb;
 	private Double infoOutProb;
@@ -34,6 +35,7 @@ public class Node {
 		socialCount = 0;
 		infoCount = 0;
 		infoOutCount = 0;
+		closureCount = 0;
 		following = new ArrayList<Integer>();
 		followers = new ArrayList<Integer>();
 		tweets = new ArrayList<String>();
@@ -41,6 +43,24 @@ public class Node {
 	}
 	
 	
+
+	/**
+	 * @return the closureCount
+	 */
+	public Integer getClosureCount() {
+		return closureCount;
+	}
+
+
+
+	/**
+	 * @param closureCount the closureCount to set
+	 */
+	public void setClosureCount(Integer closureCount) {
+		this.closureCount = closureCount;
+	}
+
+
 
 	/**
 	 * @return the infoOutCount

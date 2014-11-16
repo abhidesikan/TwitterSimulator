@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 import com.ub.twittersimulator.node.Node;
@@ -30,41 +32,43 @@ public class Python {
 	 */
 	public void getGammaValue(List<Node> nodeList) {
 		String items = "";
-		try{
-			File file2 = new File(
-					"/home/abhi/workspaceLuna/TwitterSimulator/Arguments");
+		String path = "";
+		try {
+			File f = new File(System.getProperty("java.class.path"));
+			File dir = f.getAbsoluteFile().getParentFile();
+			path = dir.toString();
+			File file2 = new File(path+"/Arguments");
 			if (!file2.exists()) {
 				file2.createNewFile();
 			}
 			FileWriter fw = new FileWriter(file2.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.write("[");
-			for (Node node : nodeList) {			
+			for (Node node : nodeList) {
 				items = items + (node.getFollowers().size() + ",");
-				
+
 			}
 			bw.write(items);
 			bw.write("]");
 			bw.close();
 			fw.close();
 
-			
-		}catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-	
 
 		String line = null;
 		int gamma = 0;
 
 		try {
-			Process p = Runtime.getRuntime().exec("python "+System.getProperty("user.dir")+"/Scripts/twitter.py /home/abhi/workspaceLuna/TwitterSimulator/Arguments");
-			BufferedReader bri = new BufferedReader(new InputStreamReader(
-					p.getInputStream()));
+			
+			File file = new File(path+"/Arguments"); 			
+			Process p = Runtime.getRuntime().exec("python " + System.getProperty("user.dir")+ "/twitter.py " + file);
+			BufferedReader bri = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			while ((line = bri.readLine()) != null) {
 				System.out.println(line);
 			}
+
 		} catch (NumberFormatException e) {
 
 		} catch (IOException e) {

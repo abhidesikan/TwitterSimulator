@@ -40,11 +40,12 @@ public class CheckValues {
 		
 		List followers = node1.getFollowing();
 		Iterator it = followers.iterator();
+		Node node2 = (Node)nodeList.get(nodeId);
 		
 		while(it.hasNext()){
 			Node node = (Node) nodeList.get((Integer)it.next());
 			if(node.getFollowing().contains(nodeId)){
-				node1.setClosureCount(node1.getClosureCount()+1);
+				node2.setClosureCount(node2.getClosureCount()+1);
 				break;
 			}
 		}

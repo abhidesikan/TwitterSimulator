@@ -12,7 +12,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.ub.twittersimulator.node.Node;
 
@@ -30,7 +33,7 @@ public class Python {
 	 * Method executes python script and prints gamma value. Accepts node list
 	 * as input parameter.
 	 */
-	public void getGammaValue(List<Node> nodeList) {
+	public void getGammaValue(HashMap<Integer, Node> nodeMap) {
 		String items = "";
 		String path = "";
 		try {
@@ -43,10 +46,12 @@ public class Python {
 			}
 			FileWriter fw = new FileWriter(file2.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("[");
-			for (Node node : nodeList) {
+			bw.write("[");			
+			Iterator it = nodeMap.entrySet().iterator();
+			while(it.hasNext()){
+				Map.Entry<Integer, Node> pairs = (Map.Entry<Integer, Node>)it.next();
+				Node node = pairs.getValue();
 				items = items + (node.getFollowers().size() + ",");
-
 			}
 			bw.write(items);
 			bw.write("]");

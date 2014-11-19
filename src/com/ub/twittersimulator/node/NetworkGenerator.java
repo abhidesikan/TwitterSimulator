@@ -42,10 +42,10 @@ public class NetworkGenerator {
 	 * attachment model. Returns list of nodes populated with their respective
 	 * node information.
 	 */
-	public List<Node> createNodes(Integer networkSize,
+	public HashMap<Integer, Node> createNodes(Integer networkSize,
 			Integer initialNetworkSize, int links, double ratio, boolean flag) {
 
-		List<Node> nodeList = createInitialNetwork(initialNetworkSize);
+		HashMap<Integer, Node> nodeMap = createInitialNetwork(initialNetworkSize);
 		TreeMap<Double, Integer> infoTreeMap = null;
 		TreeMap<Double, Integer> socTreeMap = null;
 		TreeMap<Double, Integer> infoOutTreeMap = null;
@@ -58,9 +58,9 @@ public class NetworkGenerator {
 
 			List<Integer> selected = new ArrayList<Integer>();
 
-			nodeList = prob.updateProbability(nodeList);
-			infoTreeMap = prob.updateInfoTreeMap((nodeList));
-			socTreeMap = prob.updateSocTreeMap(nodeList);
+			nodeMap = prob.updateProbability(nodeMap);
+			infoTreeMap = prob.updateInfoTreeMap((nodeMap));
+			socTreeMap = prob.updateSocTreeMap(nodeMap);
 
 
 			Node node = new Node();
@@ -74,7 +74,7 @@ public class NetworkGenerator {
 
 			for (j = 0; j < infoLinks; j++) {
 				Double pickedNumber = rand.nextDouble();
-				node = nodeList.get(CheckValues.mappedValue(infoTreeMap,
+				node = nodeMap.get(CheckValues.mappedValue(infoTreeMap,
 						pickedNumber));
 				if (selected.contains(node.getNodeId())) {
 					j--;
@@ -91,7 +91,7 @@ public class NetworkGenerator {
 
 			for (k = 0; k < socialLinks; k++) {
 				Double pickedNumber = rand.nextDouble();
-				node = nodeList.get(CheckValues.mappedValue(socTreeMap,
+				node = nodeMap.get(CheckValues.mappedValue(socTreeMap,
 						pickedNumber));
 
 				if (selected.contains(node.getNodeId())) {
@@ -108,26 +108,26 @@ public class NetworkGenerator {
 				newNode.setSocialCount(newNode.getSocialCount() + 1);
 
 			}
-			nodeList.add(newNode);
+			nodeMap.put(i,newNode);
 			
 			if(flag){
-				nodeList = prob.updateOutProbability(nodeList);
-				infoOutTreeMap = prob.updateInfoOutTreeMap(nodeList);
+				nodeMap = prob.updateOutProbability(nodeMap);
+				infoOutTreeMap = prob.updateInfoOutTreeMap(nodeMap);
 
 				Node node1 = new Node();
 				Node newNode1 = new Node();
 				Double pickedNumber = rand.nextDouble();
-				newNode1 = nodeList.get(CheckValues.mappedValue(infoOutTreeMap, pickedNumber));				
+				newNode1 = nodeMap.get(CheckValues.mappedValue(infoOutTreeMap, pickedNumber));				
 				
 				
 				for (j = 0; j < infoLinks; j++) {
 					Double pNumber = rand.nextDouble();
-					node1 = nodeList.get(CheckValues.mappedValue(infoTreeMap,
+					node1 = nodeMap.get(CheckValues.mappedValue(infoTreeMap,
 							pNumber));
 					if (newNode1.getFollowing().contains(node1.getNodeId())) {
 						continue;
 					}
-					CheckValues.checkClosure(newNode1, node1.getNodeId(), nodeList);
+					CheckValues.checkClosure(newNode1, node1.getNodeId(), nodeMap);
 					
 					newNode1.getFollowing().add(node1.getNodeId());
 					newNode1.setInfoOutCount(newNode1.getInfoOutCount()+1);
@@ -138,14 +138,14 @@ public class NetworkGenerator {
 
 				for (k = 0; k < socialLinks; k++) {
 					Double pNumber = rand.nextDouble();
-					node1 = nodeList.get(CheckValues.mappedValue(socTreeMap,
+					node1 = nodeMap.get(CheckValues.mappedValue(socTreeMap,
 							pNumber));
 
 					if (newNode1.getFollowing().contains(node1.getNodeId())) {
 						continue;
 					}
 
-					CheckValues.checkClosure(newNode1, node1.getNodeId(), nodeList);
+					CheckValues.checkClosure(newNode1, node1.getNodeId(), nodeMap);
 
 					node1.getFollowers().add(newNode1.getNodeId());
 					node1.getFollowing().add(newNode1.getNodeId());
@@ -158,27 +158,27 @@ public class NetworkGenerator {
 			}
 		}
 		
-		try {
-			File file = new File(
-					"/home/abhi/workspaceLuna/TwitterSimulator/NodeDetails2");
-			if (!file.exists()) {
-				file.createNewFile();
-			}
+//		try {
+//			File file = new File(
+//					"/home/abhi/workspaceLuna/TwitterSimulator/NodeDetails2");
+//			if (!file.exists()) {
+//				file.createNewFile();
+//			}
+//
+//			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+//			BufferedWriter bw = new BufferedWriter(fw);
+//			bw.write("Node id" + "  " + "Followers" + "\n");
+//			for (Node node : nodeList) {
+//				bw.write(node.getNodeId() + "  " + node.getFollowers().size()+ "\n");
+//			}
+//
+//			bw.close();
+//			fw.close();
+//		} catch (Exception e) {
+//
+//		}
 
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("Node id" + "  " + "Followers" + "\n");
-			for (Node node : nodeList) {
-				bw.write(node.getNodeId() + "  " + node.getFollowers().size()+ "\n");
-			}
-
-			bw.close();
-			fw.close();
-		} catch (Exception e) {
-
-		}
-
-		return nodeList;
+		return nodeMap;
 
 	}
 
@@ -187,30 +187,31 @@ public class NetworkGenerator {
 	 * connected social network for the given input network size. Returns the
 	 * list of nodes populated with respective node information.
 	 */
-	public List<Node> createInitialNetwork(Integer initialNetworkSize) {
+	public HashMap<Integer, Node> createInitialNetwork(Integer initialNetworkSize) {
 
-		List<Node> nodeList = new ArrayList<>();
-
+		HashMap<Integer, Node> nodeMap = new HashMap<>();
+		
 		for (int i = 0; i < initialNetworkSize; i++) {
 			Node node = new Node();
 			node.setNodeId(i);
 			node.setUserName("User " + i);
 			node.setHandle("@user" + i);
-			nodeList.add(node);
+			nodeMap.put(i, node);
 		}
 
-		for (Node node : nodeList) {
+		Iterator it = nodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<Integer, Node> pairs = (Map.Entry<Integer, Node>)it.next();
 			for (int i = 0; i < initialNetworkSize; i++) {
-				if (i != node.getNodeId()) {
-					node.getFollowers().add(i);
-					node.getFollowing().add(i);
-					node.setSocialCount(node.getSocialCount() + 1);
+				if (i != pairs.getKey()) {
+					pairs.getValue().getFollowers().add(i);
+					pairs.getValue().getFollowing().add(i);
+					pairs.getValue().setSocialCount(pairs.getValue().getSocialCount() + 1);
 				}
 			}
 		}
-
 		
 
-		return nodeList;
+		return nodeMap;
 	}
 }

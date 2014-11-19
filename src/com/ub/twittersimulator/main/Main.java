@@ -3,6 +3,9 @@
  */
 package com.ub.twittersimulator.main;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -37,7 +40,7 @@ public class Main {
 		int gamma = 0;
 		boolean flag = false;
 		String response = null;
-		List<Node> nodeList = null;
+		HashMap<Integer, Node> nodeMap = new HashMap<Integer, Node>();
 		
 		try{
 			
@@ -58,22 +61,25 @@ public class Main {
 			if(response.equalsIgnoreCase("d")){
 				flag = true;
 			}
+			Calendar cal = Calendar.getInstance();
+			
+			System.out.println("Start time "+cal.getTime());
 			
 			NetworkGenerator netGen = new NetworkGenerator();
-			nodeList = netGen.createNodes(networkSize, initialNetworkSize, links, ratio, flag);
+			nodeMap = netGen.createNodes(networkSize, initialNetworkSize, links, ratio, flag);
 			
 			
 			Python python = new Python();
-			python.getGammaValue(nodeList);
+	//		python.getGammaValue(nodeMap);
 			
 			System.out.println("Network of size "+networkSize+" is generated. \n");
-			
+			System.out.println("End time "+ cal.getTime());
 			while(true){
 				System.out.println("Enter node id to retrieve node statistics: ");
 				nodeId = in.nextInt();
 				
 				NodeStatistics stats = new NodeStatistics();
-				stats.printNodeInformation(nodeList, nodeId);
+				stats.printNodeInformation(nodeMap, nodeId);
 				
 				System.out.println("Do you want to exit the program? (Y/N)");
 				response = in.next();

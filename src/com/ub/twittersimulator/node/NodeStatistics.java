@@ -3,6 +3,7 @@
  */
 package com.ub.twittersimulator.node;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,9 +20,9 @@ public class NodeStatistics {
 	 * Method accepts the node list and node id as input parameter and displays the node information
 	 * for that particular node id.
 	 */
-	public void printNodeInformation(List<Node> nodeList, int nodeId){
+	public void printNodeInformation(HashMap<Integer, Node> nodeMap, int nodeId){
 		
-		Node n = nodeList.get(nodeId);
+		Node n = nodeMap.get(nodeId);
 		
 		System.out.println("User name :"+n.getUserName());
 		System.out.println("Followers :"+n.getFollowers());

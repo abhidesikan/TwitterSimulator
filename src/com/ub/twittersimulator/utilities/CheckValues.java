@@ -4,6 +4,7 @@
 package com.ub.twittersimulator.utilities;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +37,14 @@ public class CheckValues {
 	    return e == null ? null : e.getValue();
 	}
 	
-	public static void checkClosure(Node node1, int nodeId, List nodeList){
+	public static void checkClosure(Node node1, int nodeId, HashMap<Integer, Node> nodeMap){
 		
+		Node node2 = (Node)nodeMap.get(nodeId);
 		List followers = node1.getFollowing();
 		Iterator it = followers.iterator();
-		Node node2 = (Node)nodeList.get(nodeId);
 		
 		while(it.hasNext()){
-			Node node = (Node) nodeList.get((Integer)it.next());
+			Node node = (Node) nodeMap.get((Integer)it.next());
 			if(node.getFollowing().contains(nodeId)){
 				node2.setClosureCount(node2.getClosureCount()+1);
 				break;

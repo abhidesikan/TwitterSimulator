@@ -3,7 +3,10 @@
  */
 package com.ub.twittersimulator.utilities;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import com.ub.twittersimulator.node.Node;
@@ -30,21 +33,26 @@ public class Probability {
 	 * Accepts and returns the updated node list.
 	 */
 
-	public List<Node> updateProbability(List<Node> nodeList) {
+	public HashMap<Integer, Node> updateProbability(HashMap<Integer, Node> nodeMap) {
 
-		for (int i = 0; i < nodeList.size(); i++) {
-			totalInfoSum = totalInfoSum + nodeList.get(i).getInfoCount()
-					+ nodeList.get(i).getSocialCount();
-			totalSocialSum = totalSocialSum + nodeList.get(i).getSocialCount();
+		for (int i = 0; i < nodeMap.size(); i++) {
+			totalInfoSum = totalInfoSum + nodeMap.get(i).getInfoCount()
+					+ nodeMap.get(i).getSocialCount();
+			totalSocialSum = totalSocialSum + nodeMap.get(i).getSocialCount();
 		}
-		for (Node node : nodeList) {
+
+		Iterator it = nodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<Integer, Node> pairs = (Map.Entry<Integer, Node>)it.next();
+			Node node = pairs.getValue();
 			node.setInfoProb((node.getInfoCount() + node.getSocialCount())
 					/ totalInfoSum);
 			node.setSocProb(node.getSocialCount() / totalSocialSum);
+			pairs.setValue(node);
 		}
 		totalInfoSum = 0;
 		totalSocialSum = 0;
-		return nodeList;
+		return nodeMap;
 	}
 	
 	/*
@@ -52,33 +60,41 @@ public class Probability {
 	 * in the network. Accepts and returns updated node list. 
 	 * 
 	 */
-	public List<Node> updateOutProbability(List<Node> nodeList) {
+	public HashMap<Integer, Node> updateOutProbability(HashMap<Integer, Node> nodeMap) {
 
-		for (int i = 0; i < nodeList.size(); i++) {
-			totalInfoSum = totalInfoSum + nodeList.get(i).getInfoOutCount()
-					+ nodeList.get(i).getSocialCount();
+		for (int i = 0; i < nodeMap.size(); i++) {
+			totalInfoSum = totalInfoSum + nodeMap.get(i).getInfoOutCount()
+					+ nodeMap.get(i).getSocialCount();
 		}
-		for (Node node : nodeList) {
-			node.setInfoOutProb((node.getInfoOutCount() + node.getSocialCount())
-					/ totalInfoSum);
+
+		
+		Iterator it = nodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<Integer, Node> pairs = (Map.Entry<Integer, Node>)it.next();
+			Node node = pairs.getValue();
+			node.setInfoOutProb((node.getInfoCount() + node.getSocialCount())/ totalInfoSum);
+			pairs.setValue(node);
 		}
 		totalInfoSum = 0;
 		totalSocialSum = 0;
 		
-		return nodeList;
+		return nodeMap;
 	}
 
 	/*
 	 * Method accepts the node list as input and returns a TreeMap with information probability range as key 
 	 * and node id as value.
 	 */
-	public TreeMap<Double, Integer> updateInfoTreeMap(List<Node> nodeList) {
+	public TreeMap<Double, Integer> updateInfoTreeMap(HashMap<Integer, Node> nodeMap) {
 
 		TreeMap<Double, Integer> infoTreeMap = new TreeMap<Double, Integer>();
-
-		for (Node n : nodeList) {
-			infoTreeMap.put(infoRange, n.getNodeId());
-			infoRange = infoRange + n.getInfoProb();
+		
+		Iterator it = nodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<Integer, Node> pairs = (Map.Entry<Integer, Node>)it.next();
+			Node node = pairs.getValue();
+			infoTreeMap.put(infoRange, node.getNodeId());
+			infoRange = infoRange + node.getInfoProb();
 		}
 		infoRange = 0.0;
 		return infoTreeMap;
@@ -88,13 +104,16 @@ public class Probability {
 	 * Method accepts the node list as input and returns a TreeMap with social probability range as key 
 	 * and node id as value.
 	 */
-	public TreeMap<Double, Integer> updateSocTreeMap(List<Node> nodeList) {
+	public TreeMap<Double, Integer> updateSocTreeMap(HashMap<Integer, Node> nodeMap) {
 
 		TreeMap<Double, Integer> socTreeMap = new TreeMap<Double, Integer>();
-
-		for (Node n : nodeList) {
-			socTreeMap.put(socRange, n.getNodeId());
-			socRange = socRange + n.getSocProb();
+		
+		Iterator it = nodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<Integer, Node> pairs = (Map.Entry<Integer, Node>)it.next();
+			Node node = pairs.getValue();
+			socTreeMap.put(socRange, node.getNodeId());
+			socRange = socRange + node.getSocProb();
 		}
 		socRange = 0.0;
 		
@@ -106,14 +125,18 @@ public class Probability {
 	 * Method accepts the node list as input and returns a TreeMap with information probability range as key 
 	 * and node id as value, for dynamic following of nodes.
 	 */
-	public TreeMap<Double, Integer> updateInfoOutTreeMap(List<Node> nodeList) {
+	public TreeMap<Double, Integer> updateInfoOutTreeMap(HashMap<Integer, Node> nodeMap) {
 
 		TreeMap<Double, Integer> infoOutTreeMap = new TreeMap<Double, Integer>();
-
-		for (Node n : nodeList) {
-			infoOutTreeMap.put(infoRange, n.getNodeId());
-			infoRange = infoRange + n.getInfoOutProb();
+		
+		Iterator it = nodeMap.entrySet().iterator();
+		while(it.hasNext()){
+			Map.Entry<Integer, Node> pairs = (Map.Entry<Integer, Node>)it.next();
+			Node node = pairs.getValue();
+			infoOutTreeMap.put(infoRange, node.getNodeId());
+			infoRange = infoRange + node.getInfoOutProb();
 		}
+		
 		infoRange = 0.0;
 		return infoOutTreeMap;
 	}
